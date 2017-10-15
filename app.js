@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const exphbs = require('express-handlebars');
 const bodyParser = require('body-parser');
+const methodOverride = require('method-override')
 
 const app = express();
 
@@ -20,6 +21,8 @@ app.set('view engine', 'handlebars');
 // Middlewear
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
+
+app.use(methodOverride('_method'));
 
 
 app.get('/', (req, res, next) => {    
@@ -84,6 +87,29 @@ app.post('/ideas', (req, res) => {
     }
     
 })
+
+// Edit form process
+app.put('/ideas/:id', (req, res) => {
+    Idea.findOne({
+        _id: req.params.id
+    }).then(idea => {
+        idea.title = req.body.title;
+        idea.details = req.body.details;
+
+        idea.save()
+        .then(idea => {
+            res.redirect('/ideas');
+        })
+    });
+});
+
+// Delete Ide
+app.delete('/ideas/:id', (req, res) => {
+    Idea.remove({_id: req.params.id})
+        .then(() => {
+            res.redirect('/ideas');
+        });
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
