@@ -1,0 +1,23 @@
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+// create schema
+const IdeaSchema = new Schema({
+    title: {
+        type: String,
+        required: true
+    },
+    details: {
+        type: String,
+        required: true
+    },
+    date: {
+        type: Date,
+        default: Date.now
+    }
+});
+
+mongoose.model('idea', IdeaSchema); // without export
+
+// const Idea = mongoose.model('idea', IdeaSchema);
+// module.exports = Idea;
